@@ -1,8 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/model/pokemon.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:pokedex/screen/home_page.dart';
 
-void main() {
+List<Pokemon> pokemon = [];
+Color? _color({required String type}) {
+  switch (type) {
+    case 'normal':
+      return const Color.fromARGB(122, 141, 149, 157);
+    case 'fire':
+      return const Color.fromARGB(255, 249, 151, 79);
+    case 'water':
+      return const Color.fromARGB(255, 75, 139, 207);
+    case 'grass':
+      return const Color.fromARGB(255, 93, 180, 85);
+    case 'electric':
+      return const Color.fromARGB(255, 238, 204, 56);
+    case 'ice':
+      return const Color.fromARGB(255, 109, 200, 185);
+    case 'fighting':
+      return const Color.fromARGB(255, 206, 66, 107);
+    case 'poison':
+      return const Color.fromARGB(255, 165, 102, 197);
+    case 'ground':
+      return const Color.fromARGB(255, 212, 116, 64);
+    case 'flying':
+      return const Color.fromARGB(255, 135, 162, 217);
+    case 'psychic':
+      return const Color.fromARGB(255, 239, 104, 110);
+    case 'bug':
+      return const Color.fromARGB(255, 141, 187, 43);
+    case 'rock':
+      return const Color.fromARGB(255, 191, 177, 133);
+    case 'ghost':
+      return const Color.fromARGB(255, 78, 101, 168);
+    case 'dark':
+      return const Color.fromARGB(255, 84, 77, 95);
+    case 'dragon':
+      return const Color.fromARGB(255, 10, 105, 187);
+    case 'steel':
+      return const Color.fromARGB(255, 83, 134, 153);
+    case 'fairy':
+      return const Color.fromARGB(255, 228, 134, 223);
+    default:
+      return Colors.grey;
+  }
+}
+
+void main() async {
+  for (var i = 1; i <= 870; i++) {
+    List<String> types = [];
+    print(i);
+    var url = Uri.parse("https://pokeapi.co/api/v2/pokemon/$i");
+    var response = await http.get(url);
+    var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
+    try {
+      pokemon.add(Pokemon(
+        name: json["name"],
+        types: [
+          json["types"][0]["type"]["name"],
+          json["types"][1]["type"]["name"]
+        ],
+        sprite: json["sprites"]["front_default"],
+        colorTypes1: _color(type: json["types"][0]["type"]["name"]),
+        colorTypes2: _color(type: json["types"][1]["type"]["name"]),
+      ));
+    } catch (e) {
+      pokemon.add(Pokemon(
+        name: json["name"],
+        types: [
+          json["types"][0]["type"]["name"],
+          json["types"][0]["type"]["name"]
+        ],
+        sprite: json["sprites"]["front_default"],
+        colorTypes1: _color(type: json["types"][0]["type"]["name"]),
+        colorTypes2: _color(type: json["types"][0]["type"]["name"]),
+      ));
+    }
+  }
+
   runApp(const PokedexApp());
 }
 
@@ -14,168 +91,6 @@ class PokedexApp extends StatefulWidget {
 }
 
 class _PokedexAppState extends State<PokedexApp> {
-  int contatore = 1;
-  Color color1 = Colors.red, color2 = Colors.red;
-  List<String> pokemon = [
-    "Bulbasaur",
-    "Ivysaur",
-    "Venusaur",
-    "Charmander",
-    "Charmeleon",
-    "Charizard",
-    "Squirtle",
-    "Wartortle",
-    "Blastoise",
-    "Caterpie",
-    "Metapod",
-    "Butterfree",
-    "Weedle",
-    "Kakuna",
-    "Beedrill",
-    "Pidgey",
-    "Pidgeotto",
-    "Pidgeot",
-    "Rattata",
-    "Raticate",
-    "Spearow",
-    "Fearow",
-    "Ekans",
-    "Arbok",
-    "Pikachu",
-    "Raichu",
-    "Sandshrew",
-    "Sandslash",
-    "Nidoran♀",
-    "Nidorina",
-    "Nidoqueen",
-    "Nidoran♂",
-    "Nidorino",
-    "Nidoking",
-    "Clefairy",
-    "Clefable",
-    "Vulpix",
-    "Ninetales",
-    "Jigglypuff",
-    "Wigglytuff",
-    "Zubat",
-    "Golbat",
-    "Oddish",
-    "Gloom",
-    "Vileplume",
-    "Paras",
-    "Parasect",
-    "Venonat",
-    "Venomoth",
-    "Diglett",
-    "Dugtrio",
-    "Meowth",
-    "Persian",
-    "Psyduck",
-    "Golduck",
-    "Mankey",
-    "Primeape",
-    "Growlithe",
-    "Arcanine",
-    "Poliwag",
-    "Poliwhirl",
-    "Poliwrath",
-    "Abra",
-    "Kadabra",
-    "Alakazam",
-    "Machop",
-    "Machoke",
-    "Machamp",
-    "Bellsprout",
-    "Weepinbell",
-    "Victreebel",
-    "Tentacool",
-    "Tentacruel",
-    "Geodude",
-    "Graveler",
-    "Golem",
-    "Ponyta",
-    "Rapidash",
-    "Slowpoke",
-    "Slowbro",
-    "Magnemite",
-    "Magneton",
-    "Farfetch'd",
-    "Doduo",
-    "Dodrio",
-    "Seel",
-    "Dewgong",
-    "Grimer",
-    "Muk",
-    "Shellder",
-    "Cloyster",
-    "Gastly",
-    "Haunter",
-    "Gengar",
-    "Onix",
-    "Drowzee",
-    "Hypno",
-    "Krabby",
-    "Kingler",
-    "Voltorb",
-    "Electrode",
-    "Exeggcute",
-    "Exeggutor",
-    "Cubone",
-    "Marowak",
-    "Hitmonlee",
-    "Hitmonchan",
-    "Lickitung",
-    "Koffing",
-    "Weezing",
-    "Rhyhorn",
-    "Rhydon",
-    "Chansey",
-    "Tangela",
-    "Kangaskhan",
-    "Horsea",
-    "Seadra",
-    "Goldeen",
-    "Seaking",
-    "Staryu",
-    "Starmie",
-    "Mr. Mime",
-    "Scyther",
-    "Jynx",
-    "Electabuzz",
-    "Magmar",
-    "Pinsir",
-    "Tauros",
-    "Magikarp",
-    "Gyarados",
-    "Lapras",
-    "Ditto",
-    "Eevee",
-    "Vaporeon",
-    "Jolteon",
-    "Flareon",
-    "Porygon",
-    "Omanyte",
-    "Omastar",
-    "Kabuto",
-    "Kabutops",
-    "Aerodactyl",
-    "Snorlax",
-    "Articuno",
-    "Zapdos",
-    "Moltres",
-    "Dratini",
-    "Dragonair",
-    "Dragonite",
-    "Mewtwo",
-    "Mew"
-  ];
-  Map<String, dynamic> pokemonData = {
-    "name": "",
-    "sprite": "",
-    "type1": "",
-    "type2": null,
-  };
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -183,203 +98,25 @@ class _PokedexAppState extends State<PokedexApp> {
       debugShowCheckedModeBanner: false,
       home: Builder(
         builder: (context) => Scaffold(
-          body: Column(
-            children: [
-              Flexible(
-                child: ListView.builder(
-                  itemCount: 151,
-                  itemBuilder: (BuildContext context, int index) {
-                    getPokemonData(pokemon[contatore].toLowerCase());
-                    contatore++;
-                    return Container(
-                      width: double.infinity,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            color1,
-                            color2,
-                          ],
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(pokemonData["name"]),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
+          appBar: AppBar(
+            backgroundColor: Colors.red,
+            title: const Text("Pokedex"),
+          ),
+          body: ListView.builder(
+            itemCount: pokemon.length,
+            itemBuilder: (context, index) {
+              return pokemon[index];
+            },
           ),
         ),
       ),
     );
   }
-
-  void setColorForType() {
-    switch (pokemonData["type1"]) {
-      case 'normal':
-        color1 = Colors.brown[400]!;
-        break;
-      case 'fire':
-        color1 = Colors.red;
-        break;
-      case 'water':
-        color1 = Colors.blue;
-        break;
-      case 'grass':
-        color1 = Colors.green;
-        break;
-      case 'electric':
-        color1 = Colors.amber;
-        break;
-      case 'ice':
-        color1 = Colors.cyanAccent[400]!;
-        break;
-      case 'fighting':
-        color1 = Colors.orange;
-        break;
-      case 'poison':
-        color1 = Colors.purple;
-        break;
-      case 'ground':
-        color1 = Colors.orange[300]!;
-        break;
-      case 'flying':
-        color1 = Colors.indigo[200]!;
-        break;
-      case 'psychic':
-        color1 = Colors.pink;
-        break;
-      case 'bug':
-        color1 = Colors.lightGreen[500]!;
-        break;
-      case 'rock':
-        color1 = Colors.grey;
-        break;
-      case 'ghost':
-        color1 = Colors.indigo[400]!;
-        break;
-      case 'dark':
-        color1 = Colors.brown;
-        break;
-      case 'dragon':
-        color1 = Colors.indigo[800]!;
-        break;
-      case 'steel':
-        color1 = Colors.blueGrey;
-        break;
-      case 'fairy':
-        color1 = Colors.pinkAccent[100]!;
-        break;
-    }
-
-    if (pokemonData["type2"] == null) {
-      color2 = color1;
-      return;
-    }
-
-    switch (pokemonData["type2"]) {
-      case 'normal':
-        color2 = Colors.brown[400]!;
-        break;
-      case 'fire':
-        color2 = Colors.red;
-        break;
-      case 'water':
-        color2 = Colors.blue;
-        break;
-      case 'grass':
-        color2 = Colors.green;
-        break;
-      case 'electric':
-        color2 = Colors.amber;
-        break;
-      case 'ice':
-        color2 = Colors.cyanAccent[400]!;
-        break;
-      case 'fighting':
-        color2 = Colors.orange;
-        break;
-      case 'poison':
-        color2 = Colors.purple;
-        break;
-      case 'ground':
-        color2 = Colors.orange[300]!;
-        break;
-      case 'flying':
-        color2 = Colors.indigo[200]!;
-        break;
-      case 'psychic':
-        color2 = Colors.pink;
-        break;
-      case 'bug':
-        color2 = Colors.lightGreen[500]!;
-        break;
-      case 'rock':
-        color2 = Colors.grey;
-        break;
-      case 'ghost':
-        color2 = Colors.indigo[400]!;
-        break;
-      case 'dark':
-        color2 = Colors.brown;
-        break;
-      case 'dragon':
-        color2 = Colors.indigo[800]!;
-        break;
-      case 'steel':
-        color2 = Colors.blueGrey;
-        break;
-      case 'fairy':
-        color2 = Colors.pinkAccent[100]!;
-        break;
-    }
-  }
-
-  void getPokemonData(String nome_pokemon) async {
-    var url = Uri.https("pokeapi.co", "/api/v2/pokemon/$nome_pokemon");
-    var response = await http.get(url);
-    var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
-    setState(
-      () => {
-        pokemonData.update("name", (value) => json["name"]),
-        pokemonData.update(
-            "sprite", (value) => json["sprites"]["front_default"]),
-        pokemonData.update(
-            "type1", (value) => json["types"][0]["type"]["name"]),
-      },
-    );
-    try {
-      pokemonData.update("type2", (value) => json["types"][1]["type"]["name"]);
-    } catch (e) {
-      pokemonData.update("type2", (value) => null);
-    }
-    setColorForType();
-  }
 }
 
+
 /*
-Flexible(
-                child: ListView.builder(
-                  itemCount: contatore,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      width: double.infinity,
-                      height: 70,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+
 
 
 
