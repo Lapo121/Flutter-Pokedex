@@ -48,8 +48,49 @@ Color? _color({required String type}) {
   }
 }
 
+Color? _colorContainer({required String type}) {
+  switch (type) {
+    case 'normal':
+      return Colors.grey[200];
+    case 'fire':
+      return Colors.orange[200];
+    case 'water':
+      return Colors.blue[200];
+    case 'grass':
+      return Colors.green[200];
+    case 'electric':
+      return Colors.yellow[200];
+    case 'ice':
+      return Colors.lightBlue[100];
+    case 'fighting':
+      return Colors.red[200];
+    case 'poison':
+      return Colors.purple[200];
+    case 'ground':
+      return const Color.fromARGB(255, 235, 147, 99);
+    case 'flying':
+      return Colors.blue[100];
+    case 'psychic':
+      return Colors.pink[200];
+    case 'bug':
+      return Colors.lightGreen[300];
+    case 'rock':
+      return Colors.brown[200];
+    case 'ghost':
+      return Colors.deepPurple[300];
+    case 'dark':
+      return Colors.grey[900];
+    case 'dragon':
+      return Colors.indigo[400];
+    case 'steel':
+      return Colors.blueGrey[300];
+    case 'fairy':
+      return Colors.pinkAccent[100];
+  }
+}
+
 void main() async {
-  for (var i = 1; i <= 9; i++) {
+  for (var i = 1; i <= 151; i++) {
     var url = Uri.parse("https://pokeapi.co/api/v2/pokemon/$i");
     var response = await http.get(url);
     var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
@@ -71,6 +112,7 @@ void main() async {
         colorTypes1: _color(type: json["types"][0]["type"]["name"]),
         colorTypes2: _color(type: json["types"][1]["type"]["name"]),
         id: i.toString(),
+        colorContainer: _colorContainer(type: json["types"][0]["type"]["name"]),
       ));
     } catch (e) {
       pokemon.add(Pokemon(
@@ -90,6 +132,7 @@ void main() async {
         colorTypes1: _color(type: json["types"][0]["type"]["name"]),
         colorTypes2: _color(type: json["types"][0]["type"]["name"]),
         id: i.toString(),
+        colorContainer: _colorContainer(type: json["types"][0]["type"]["name"]),
       ));
     }
   }

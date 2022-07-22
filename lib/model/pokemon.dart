@@ -5,8 +5,7 @@ import 'package:pokedex/screen/pokemon_info.dart';
 class Pokemon extends StatefulWidget {
   String name, spriteFront, spriteBack, spriteFrontShiny, spriteBackShiny, id;
   List<String> types;
-  Color? colorTypes1;
-  Color? colorTypes2;
+  Color? colorTypes1, colorTypes2, colorContainer;
 
   Pokemon({
     super.key,
@@ -19,6 +18,7 @@ class Pokemon extends StatefulWidget {
     required this.spriteBackShiny,
     required this.colorTypes1,
     required this.colorTypes2,
+    required this.colorContainer,
   });
 
   @override
@@ -48,6 +48,7 @@ class _PokemonState extends State<Pokemon> {
               ],
               colorTypes1: widget.colorTypes1,
               colorTypes2: widget.colorTypes2,
+              colorContainer: widget.colorContainer,
             ),
           ),
         );

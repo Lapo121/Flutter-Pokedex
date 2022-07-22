@@ -6,8 +6,7 @@ import '../widget/pokemonTypeContainer.dart';
 class PokemonInfo extends StatefulWidget {
   String name, spriteFront, spriteBack, spriteFrontShiny, spriteBackShiny, id;
   List<String> types;
-  Color? colorTypes1;
-  Color? colorTypes2;
+  Color? colorTypes1, colorTypes2, colorContainer;
   PokemonInfo({
     super.key,
     required this.name,
@@ -19,6 +18,7 @@ class PokemonInfo extends StatefulWidget {
     required this.types,
     required this.colorTypes1,
     required this.colorTypes2,
+    required this.colorContainer,
   });
 
   @override
@@ -119,7 +119,7 @@ class _PokemonInfoState extends State<PokemonInfo> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      color: Colors.green[200],
+                      color: widget.colorContainer,
                     ),
                     margin: const EdgeInsets.only(
                       top: 20,
