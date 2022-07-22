@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/screen/home_page.dart';
 import 'package:pokedex/model/pokemon.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:pokedex/screen/home_page.dart';
 
 List<Pokemon> pokemon = [];
 Color? _color({required String type}) {
@@ -49,22 +49,28 @@ Color? _color({required String type}) {
 }
 
 void main() async {
-  for (var i = 1; i <= 870; i++) {
-    List<String> types = [];
-    print(i);
+  for (var i = 1; i <= 9; i++) {
     var url = Uri.parse("https://pokeapi.co/api/v2/pokemon/$i");
     var response = await http.get(url);
     var json = convert.jsonDecode(response.body) as Map<String, dynamic>;
     try {
       pokemon.add(Pokemon(
         name: json["name"],
+        spriteFront:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$i.png",
+        spriteBack:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/$i.png",
+        spriteFrontShiny:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/$i.png",
+        spriteBackShiny:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/$i.png",
         types: [
           json["types"][0]["type"]["name"],
           json["types"][1]["type"]["name"]
         ],
-        sprite: json["sprites"]["front_default"],
         colorTypes1: _color(type: json["types"][0]["type"]["name"]),
         colorTypes2: _color(type: json["types"][1]["type"]["name"]),
+        id: i.toString(),
       ));
     } catch (e) {
       pokemon.add(Pokemon(
@@ -73,13 +79,20 @@ void main() async {
           json["types"][0]["type"]["name"],
           json["types"][0]["type"]["name"]
         ],
-        sprite: json["sprites"]["front_default"],
+        spriteFront:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$i.png",
+        spriteBack:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/$i.png",
+        spriteFrontShiny:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/$i.png",
+        spriteBackShiny:
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/$i.png",
         colorTypes1: _color(type: json["types"][0]["type"]["name"]),
         colorTypes2: _color(type: json["types"][0]["type"]["name"]),
+        id: i.toString(),
       ));
     }
   }
-
   runApp(const PokedexApp());
 }
 
@@ -94,13 +107,13 @@ class _PokedexAppState extends State<PokedexApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Pokedex",
       debugShowCheckedModeBanner: false,
       home: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.red,
             title: const Text("Pokedex"),
+            centerTitle: true,
           ),
           body: ListView.builder(
             itemCount: pokemon.length,
@@ -116,7 +129,6 @@ class _PokedexAppState extends State<PokedexApp> {
 
 
 /*
-
 
 
 
